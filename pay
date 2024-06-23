@@ -1,0 +1,154 @@
+<?php
+
+
+/**
+ * Swoole Compiler Loader Wizard
+ * Swoole Compiler Loader 安装助手
+ * version : 2.0.2
+ * date    : 2019-01-09
+ */
+// Set debug var
+ini_set("display_errors", "On");
+error_reporting(E_ALL);
+restore_exception_handler();
+restore_error_handler();
+date_default_timezone_set('Asia/Shanghai');
+
+// Set constants
+define('WIZARD_VERSION', '3.1');
+define('WIZARD_DEFAULT_LANG', 'zh-cn');
+define('WIZARD_OPTIONAL_LANG', 'zh-cn,en');
+define('WIZARD_NAME_ZH', 'Swoole Compiler Loader 安装助手-www.yfx.top');
+define('WIZARD_NAME_EN', 'Swoole Compiler Loader Wizard-www.yfx.top');
+define('WIZARD_DEFAULT_RUN_MODE', 'web');
+define('WIZARD_OPTIONAL_RUN_MODE', 'cli,web');
+define('WIZARD_DEFAULT_OS', 'linux');
+define('WIZARD_OPTIONAL_OS', 'linux,windows');
+define('WIZARD_BASE_API', 'http://compiler.swoole.com');
+
+
+
+
+// Language items
+$languages['zh-cn'] = [
+    'title' => 'Swoole Compiler Loader 安装助手-www.yfx.top',
+];
+$languages['en'] = [
+    'title' => 'Swoole Compiler Loader Wizard-www.yfx.top',
+];
+
+// Set env variable for current environment
+$env = [];
+// Check os type
+$env['os'] = [];
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $env['os']['name'] = "windows";
+    $env['os']['raw_name'] = php_uname();
+} else {
+    $env['os']['name'] = "Linux";
+    $env['os']['raw_name'] = php_uname();
+}
+// Check php
+$env['php'] = [];
+$env['php']['version'] = phpversion();
+// Check run mode
+$sapi_type = php_sapi_name();
+if ( "cli" == $sapi_type) {
+    $env['php']['run_mode'] = "cli";
+} else {
+    $env['php']['run_mode'] = "web";
+}
+// Check php bit
+if (PHP_INT_SIZE == 4) {
+    $env['php']['bit'] = 32;
+} else {
+    $env['php']['bit'] = 64;
+}
+$env['php']['sapi'] = $sapi_type;
+$env['php']['ini_loaded_file'] = php_ini_loaded_file();
+$env['php']['ini_scanned_files'] = php_ini_scanned_files();
+$env['php']['loaded_extensions'] = get_loaded_extensions();
+$env['php']['incompatible_extensions'] = ['xdebug', 'ionCube', 'zend_loader'];
+$env['php']['loaded_incompatible_extensions'] = [];
+$env['php']['extension_dir'] = ini_get('extension_dir');
+// Check incompatible extensions
+if (is_array($env['php']['loaded_extensions'])) {
+    foreach($env['php']['loaded_extensions'] as $loaded_extension) {
+        foreach($env['php']['incompatible_extensions'] as $incompatible_extension) {
+            if (strpos(strtolower($loaded_extension), strtolower($incompatible_extension)) !== false) {
+                $env['php']['loaded_incompatible_extensions'][] = $loaded_extension;
+            }
+        }
+    }
+}
+$env['php']['loaded_incompatible_extensions'] = array_unique($env['php']['loaded_incompatible_extensions']);
+// Parse System Environment Info
+$sysInfo = w_getSysInfo();
+// Check php thread safety
+$env['php']['raw_thread_safety'] = isset($sysInfo['thread_safety']) ? $sysInfo['thread_safety'] : false;
+if (isset($sysInfo['thread_safety'])) {
+    $env['php']['thread_safety'] = $sysInfo['thread_safety'] ? '线程安全' : '非线程安全';
+} else {
+    $env['php']['thread_safety'] = '未知';
+}
+
+
+
+// 已安装直接跳转首页
+$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+$the_homeurl = $http_type . $_SERVER['HTTP_HOST'];
+
+//是否版本不一致 需要升级swoole版本
+// $__swoole_loader_version = (isset($sysInfo['swoole_loader_version'])) ? substr(@$sysInfo['swoole_loader_version'], 0, 3) : '3.0' ;
+// $is_update = (WIZARD_VERSION == $__swoole_loader_version) ? false : true ;
+$is_update = false;
+
+
+// Check swoole loader installation
+if (isset($sysInfo['swoole_loader']) and isset($sysInfo['swoole_loader_version'])) {
+
+    if (!$is_update) {
+        echo "<script type='text/javascript'>window.location.href='$the_homeurl';</script>";exit;
+    }
+
+    $env['php']['swoole_loader']['status']  = $sysInfo['swoole_loader'] ? "<span style='color: #007bff;'>已安装</span>"
+        : '未安装';
+    if ($sysInfo['swoole_loader_version'] !== false) {
+        $env['php']['swoole_loader']['version'] = "<span style='color: #007bff;'>". $sysInfo['swoole_loader_version'] ."</span>";
+    } else {
+        $env['php']['swoole_loader']['version'] = '未知';
+    }
+} else {
+    $env['php']['swoole_loader']['status']  = '未安装';
+    $env['php']['swoole_loader']['version'] =  '未知';
+}
+
+if (extension_loaded('swoole_loader') && !$is_update) {
+    echo "<script type='text/javascript'>window.location.href='$the_homeurl';</script>";exit;
+}
+
+// download_url
+
+编译器加载向导
+*Swoole编译器加载器安装助手
+*版本：2.0.2
+*日期：2019-01-09
+            '8.1'=>'/help/swoole_loader_81_nts.so',
+//设置调试var
+ini_set("display_errors", "On");
+            '8.1'=>'/help/swoole_loader_81_zts.so',
+        ]
+    ],
+];
+
+//集合常数
+define('WIZARD_VERSION', '3.1');
+define('WIZARD_DEFAULT_LANG', 'zh-cn');
+define('WIZARD_OPTIONAL_LANG', 'zh-cn,en');
+define（'WIZARD_NAME_ZH'，'Swoole编译器加载器安装助手-www.yfx.top'）；
+define（'WIZARD_NAME_EN'、'Swoole编译器加载器向导-www. yfx. top'）；
+
+define('WIZARD_OPTIONAL_RUN_MODE', 'cli,web');
+define('WIZARD_DEFAULT_OS', 'linux');
+define('WIZARD_OPTIONAL_OS', 'linux,windows');
+<?php
